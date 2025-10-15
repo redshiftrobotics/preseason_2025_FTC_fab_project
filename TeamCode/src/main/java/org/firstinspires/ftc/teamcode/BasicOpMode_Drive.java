@@ -22,8 +22,8 @@ public class BasicOpMode_Drive extends OpMode {
 
         // Drive Setup
 
-        DcMotor left = hardwareMap.get(DcMotor.class, "left_drive");
-        DcMotor right = hardwareMap.get(DcMotor.class, "right_drive");
+        DcMotor left = hardwareMap.get(DcMotor.class, "l");
+        DcMotor right = hardwareMap.get(DcMotor.class, "r");
 
         drive = new DifferentialDrive(left, right);
         drive.setInverted(true, false);
@@ -33,7 +33,7 @@ public class BasicOpMode_Drive extends OpMode {
 
         // Device Setup
 
-        device1 = hardwareMap.get(DcMotor.class, "device1");
+        device1 = hardwareMap.get(DcMotor.class, "d");
         device1.setDirection(DcMotorSimple.Direction.FORWARD);
         device1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -66,7 +66,7 @@ public class BasicOpMode_Drive extends OpMode {
 
         if (drivePOV) {
             double drivePower = -gamepad1.left_stick_y;
-            double turnPower = -gamepad1.right_stick_x;
+            double turnPower = gamepad1.right_stick_x;
             drive.arcadeDrive(drivePower, turnPower);
             telemetry.addData("Joystick", "drive %.2f, turn %.2f", drivePower, turnPower);
         } else {
