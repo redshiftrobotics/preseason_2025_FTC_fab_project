@@ -46,16 +46,9 @@ public class DifferentialDrive {
         leftInput = shape(leftInput);
         rightInput = shape(rightInput);
 
-        // Apply inversion
+        // Apply clamp
         double leftPower = Range.clip(leftInput, -1, 1);
         double rightPower = Range.clip(rightInput, -1, 1);
-
-        // Normalize (make sure max magnitude is 1)
-        double max = Math.max(Math.abs(leftPower), Math.abs(rightPower));
-        if (max > 1.0) {
-            leftPower /= max;
-            rightPower /= max;
-        }
 
         drive(leftPower, rightPower);
     }
