@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "Drive POV (Default)", group = "MichaelL")
@@ -13,7 +14,11 @@ public class BasicOpMode_Drive extends OpMode {
 
     private boolean drivePOV = true;
 
+
     private DcMotor device1;
+    private DcMotor device2;
+
+    private Servo servo;
 
     @Override
     public void init() {
@@ -33,9 +38,15 @@ public class BasicOpMode_Drive extends OpMode {
 
         // Device Setup
 
-        device1 = hardwareMap.get(DcMotor.class, "d");
+        device1 = hardwareMap.get(DcMotor.class, "d1");
         device1.setDirection(DcMotorSimple.Direction.FORWARD);
-        device1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        device1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        device2 = hardwareMap.get(DcMotor.class, "d2");
+        device2.setDirection(DcMotorSimple.Direction.REVERSE);
+        device2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        servo = hardwareMap.get(Servo.class, "s");
 
         telemetry.addData("Status", "Initialized");
     }
@@ -60,7 +71,15 @@ public class BasicOpMode_Drive extends OpMode {
             gamepad1.rumble(0, 0.3, 150);
         }
 
-        drive.setBrakeMode(!gamepad1.left_bumper);
+//        drive.setBrakeMode(!gamepad1.left_bumper);
+
+        if (gamepad1.leftBumperWasPressed()) {
+            servo.setPosition(0);
+        }
+
+        if (gamepad1.rightBumperWasPressed()) {
+            servo.setPosition(0.5);
+        }
 
         telemetry.addData("Modes", "speed %s, drift %s", drive.isSlowModeEnabled() ? "slow" : "fast", drive.isBreakModeEnabled() ? "break" : "coast");
 
@@ -98,6 +117,7 @@ public class BasicOpMode_Drive extends OpMode {
         double power = gamepad1.right_trigger - gamepad1.left_trigger;
         if (Math.abs(power) < 0.1) power = 0;
         device1.setPower(power);
+        device2.setPower(power);
         telemetry.addData("Device1 Power", device1.getPower());
         telemetry.addData("Device1 Position", device1.getCurrentPosition());
     }
